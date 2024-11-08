@@ -1,0 +1,82 @@
+-- creating the stud_marks table
+create table stud_marks(
+  name char(10),
+  total_marks int
+);
+
+-- creating the result table
+create table result(
+  roll int,
+  name varchar(10),
+  class varchar(10)
+);
+
+-- inserting sample data into stud_marks
+insert into stud_marks values("kaushik", 690);
+insert into stud_marks values("om", 830);
+insert into stud_marks values("mahesh", 920);
+insert into stud_marks values("chetan", 1400);
+insert into stud_marks values("isaac", 888);
+
+-- inserting sample data into result
+insert into result(roll, name) values(1, "kaushik");
+insert into result(roll, name) values(2, "om");
+insert into result(roll, name) values(3, "mahesh");
+insert into result(roll, name) values(4, "chetan");
+insert into result(roll, name) values(5, "isaac");
+
+-- displaying the content of stud_marks and result
+select * from stud_marks;
+select * from result;
+
+-- setting delimiter for procedure and function
+delimiter //
+
+-- define stored procedure to assign grade
+create procedure proc_grade(in rno int, out grade varchar(20))
+begin
+  declare marks int;
+
+  -- fetch total_marks from stud_marks for the corresponding roll number
+  select total_marks into marks
+  from stud_marks
+  where name = (select name from result where roll = rno);
+  
+  -- handling case where marks could be null or not found
+  if marks is null then
+    set grade = 'not found';
+    update result set class = 'not found' where roll = rno;
+  elseif marks >= 990 and marks <= 1500 then
+    set grade = 'distinction';
+    update result set class = 'distinction' where roll = rno;
+  elseif marks >= 900 and marks <= 989 then
+    set grade = 'first';
+    update result set class = 'first' where roll = rno;
+  elseif marks >= 825 and marks <= 899 then
+    set grade = 'higher second';
+    update result set class = 'higher second' where roll = rno;
+  else
+    set grade = '--';
+    update result set class = '--' where roll = rno;
+  end if;
+end //
+
+-- define function to return grade
+create function func_grade(rno int)
+returns varchar(20)
+deterministic
+begin
+  declare grade varchar(20);
+
+  -- call the stored procedure to assign grade
+  call proc_grade(rno, grade);
+
+  -- return the grade value
+  return grade;
+end //
+
+-- reset delimiter back to ;
+delimiter ;
+
+-- call the function to get the grade for roll number 1 and display it
+select func_grade(1);
