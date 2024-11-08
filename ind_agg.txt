@@ -1,0 +1,40 @@
+db.createCollection("student");
+db.student.insertMany([
+  {"roll": 1, "name": "a", "subject":"aa","marks":50},
+  {"roll": 2, "name": "b", "subject":"bb","marks":60},
+  {"roll": 3, "name": "c", "subject":"cc","marks":70},
+  {"roll": 4, "name": "d", "subject":"dd","marks":80},
+  {"roll": 5, "name": "e", "subject":"ee","marks":90},
+  {"roll": 6, "name": "f", "subject":"ff","marks":100},
+  {"roll": 7, "name": "a", "subject":"aa","marks":60},
+  {"roll": 8, "name": "b", "subject":"bb","marks":70},
+  {"roll": 9, "name": "c", "subject":"cc","marks":80},
+  {"roll": 10, "name": "d", "subject":"dd","marks":90},
+  {"roll": 11, "name": "e", "subject":"ee","marks":100},
+  {"roll": 12, "name": "f", "subject":"ff","marks":90}
+]);
+
+db.student.createIndex({"name":1});
+
+db.student.getIndexes();
+
+db.student.find().sort({"name":-1});
+
+db.student.insert({"roll": 6, "name": "fsda", "subject":"ff","marks":100});
+
+db.student.createIndex({"roll":1},{"unique":true});
+
+db.student.insert({"roll": 6, "name": "fasdsad", "subject":"ff","marks":100});
+db.student.remove({"name":"fasdsad"});
+db.student.remove({"name":"fsda"});
+db.student.find();
+
+db.student.insertMany([
+
+]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$sum:"$marks"}}}]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$max:"$marks"}}}]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$min:"$marks"}}}]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$avg:"$marks"}}}]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$first:"$marks"}}}]);
+db.student.aggregate([{$group:{_id:"$subject",marks:{$last:"$marks"}}}]);

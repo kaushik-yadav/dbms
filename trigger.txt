@@ -1,0 +1,69 @@
+-- Select the database
+USE TEA55;
+
+-- Create table 'lib_book'
+CREATE TABLE lib_book (
+    bid INT,
+    bname VARCHAR(20),
+    qty INT
+);
+
+-- Create table 'lib_audit'
+CREATE TABLE lib_audit (
+    bid INT,
+    bname VARCHAR(20),
+    qty INT
+);
+
+-- Insert records into 'lib_book'
+INSERT INTO lib_book (bid, bname, qty)
+VALUES 
+    (1, "GOT", 10),
+    (2, "Harry", 20),
+    (3, "COTE", 30),
+    (4, "abc", 40);
+
+-- Display contents of 'lib_book'
+SELECT * FROM lib_book;
+
+-- Drop trigger if it exists
+DROP TRIGGER IF EXISTS Make_audit1;
+
+-- Create trigger 'Make_audit1' to log deletions to 'lib_audit'
+DELIMITER //
+CREATE TRIGGER Make_audit1
+AFTER DELETE ON lib_book
+FOR EACH ROW
+BEGIN
+    INSERT INTO lib_audit (bid, bname, qty) VALUES (OLD.bid, OLD.bname, OLD.qty);
+END;
+//
+DELIMITER ;
+
+-- Delete a record from 'lib_book' to test the trigger
+DELETE FROM lib_book WHERE bid = 1;
+
+-- Display updated contents of 'lib_book'
+SELECT * FROM lib_book;
+
+-- Display contents of 'lib_audit' after deletion
+SELECT * FROM lib_audit;
+
+-- Create trigger 'Make_audit2' to log updates to 'lib_audit'
+DELIMITER //
+CREATE TRIGGER Make_audit2
+AFTER UPDATE ON lib_book
+FOR EACH ROW
+BEGIN
+    INSERT INTO lib_audit (bid, bname, qty) VALUES (OLD.bid, OLD.bname, OLD.qty);
+END;
+//
+DELIMITER ;
+
+-- Update 'lib_book' to test the update trigger
+UPDATE lib_book
+SET bname = "harry potter"
+WHERE bid = 2;
+
+-- Display contents of 'lib_audit' after update
+SELECT * FROM lib_audit;

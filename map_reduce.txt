@@ -1,0 +1,31 @@
+
+db.createCollection("student");
+db.student.insertMany([
+  {"name": "a", "subject":"aa","marks":50},
+  {"name": "b", "subject":"bb","marks":60},
+  {"name": "c", "subject":"cc","marks":70},
+  {"name": "a", "subject":"aa","marks":80},
+  {"name": "b", "subject":"bb","marks":90}
+]);
+
+db.student.find().pretty();
+
+var mapfunc = function(){emit(this.name,1)};
+var redfunc = function(key,values){return Array.sum(values);};
+var mapfunc1 = function(){emit(this.name,1);};
+
+db.student.mapReduce(mapfunc1,redfunc,{out:"name_total"});
+db.name_total.find();
+
+var mapfunc2 = function(){emit(this.name,this.marks);};
+
+db.student.mapReduce(mapfunc2,redfunc,{out:"marks_scored"})
+db.marks_scored.find();
+var reduceFuncForAvg = function(key, values) {
+  var total = Array.sum(values);
+  var average = total / values.length;
+  return average;
+  
+};
+db.student.mapReduce(mapfunc2,reduceFuncForAvg,{out:"avg_scored"})
+db.avg_scored.find();

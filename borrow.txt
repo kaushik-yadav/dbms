@@ -1,0 +1,50 @@
+DELIMITER //
+CREATE TABLE Borrower (
+  roll_no int,
+  name varchar(20),
+  date_of_issue date,
+  b_name varchar(20),
+  status varchar(1)
+);
+
+CREATE TABLE Fine (
+  roll_no int,
+  date DATE,
+  amt int
+);
+
+INSERT INTO Borrower VALUES (1, 'k', '2024-07-06','dbms','I');
+INSERT INTO Borrower VALUES (2, 'a', '2024-07-07','python','I');
+INSERT INTO Borrower VALUES (3, 'r', '2024-07-08','java','I');
+INSERT INTO Borrower VALUES (4, 's', '2024-07-09','c','I');
+
+CREATE procedure fine_calc(IN rno int,IN b_name varchar(20))
+  BEGIN
+    declare diff int;
+    declare i_date date;
+    declare fine_amt int;
+    declare exit handler for sqlexception select 'Table not found';
+    
+    select date_of_issue into i_date 
+    From Borrower
+    where roll_no=rno and b_name = b_name;
+    
+    select datediff(curdate(),i_date) into diff;
+    
+    if diff>15 and diff<=30 then
+      set fine_amt = diff*5;
+    elseif (diff>30) then
+      set fine_amt = (30-15)*5 + (diff-30)*50;
+    end if;
+    
+    INSERT into Fine values(rno,curdate(),fine_amt);
+    update Borrower set status = 'R' Where roll_no=rno and b_name=b_name;
+  END //
+  
+  DELIMITER ;
+call fine_calc(3,'java');
+select * from Borrower;
+select * from Fine;
+
+
+

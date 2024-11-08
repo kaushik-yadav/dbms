@@ -1,0 +1,55 @@
+DELIMITER //
+CREATE TABLE o_rollcall (
+  rno int,
+  name varchar(20),
+  address varchar(20)
+);
+
+CREATE TABLE n_rollcall (
+  rno int,
+  name varchar(20),
+  address varchar(20)
+);
+
+INSERT INTO o_rollcall VALUES (1, 'k', 'college');
+INSERT INTO o_rollcall VALUES (2, 'a', 'house');
+INSERT INTO o_rollcall VALUES (3, 'r', 'work');
+INSERT INTO o_rollcall VALUES (4, 's', 'dinner');
+INSERT INTO o_rollcall VALUES (5, 't', 'office');
+
+INSERT INTO n_rollcall VALUES (4, 's', 'dinner');
+INSERT INTO n_rollcall VALUES (2, 'a', 'house');
+INSERT INTO n_rollcall VALUES (3, 'r', 'work');
+
+select * from o_rollcall;
+select * from n_rollcall;
+
+CREATE procedure n1(IN rno1 int)
+  BEGIN
+    declare rno2 int;
+    declare exit_cond boolean;
+    declare c1 cursor for select rno from o_rollcall;
+    declare continue handler for not found set exit_cond=TRUE;
+    
+    open c1;
+    l1:loop
+      fetch c1 into rno2;
+      if not exists(select * from n_rollcall where rno=rno2) then
+        INSERT into n_rollcall select * from o_rollcall where rno=rno2;
+      end if;
+      
+      if exit_cond then
+        close c1;
+        leave l1;
+      end if;
+    end loop l1;
+
+  END //
+  
+  DELIMITER ;
+call n1(3);
+select * from o_rollcall;
+select * from n_rollcall order by rno;
+
+
+

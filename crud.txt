@@ -1,0 +1,32 @@
+db.createCollection("Library");
+db.Library.insert({"bid":1,"name":"notes from underground","author":"dostoevsky"});
+db.Library.insert({"bid":2,"name":"a","author":"aa"});
+db.Library.insertMany([{"bid":3,"name":"b","author":"bb"},{"bid":4,"name":"c","author":"cc"}]);
+db.Library.find();
+db.Library.find().pretty();
+
+db.Library.update({"name":"a"},{$set:{"name":"actual"}});
+db.Library.find().pretty();
+
+db.Library.remove({"name":"b"});
+db.Library.find().pretty();
+
+
+db.Library.insert({"bid":4,"name":"c","author":"cc","desc":"duplicate"});
+db.Library.find({"name":"c"});
+
+db.Library.find({$and : [{"name":"c"},{"desc":"duplicate"}]});
+
+db.Library.find({$or : [{"name":"c"},{"desc":"duplicate"}]});
+
+db.Library.insertMany([{"bid":5,"name":"new1","author":"mmm","cost":100},{"bid":6,"name":"new2","author":"nnn","cost":150}]);
+
+db.Library.find({"cost":{$gt:100}});
+
+db.Library.find({"cost":{$gte:100}});
+
+db.Library.find({"cost":{$eq:100}});
+
+db.Library.save({ "_id" : ObjectId("123e09724827e05f89b903b9"), "bid" : 7, "name" : "new3", "author" : "ooo", "cost" : 15000 });
+
+db.Library.find().pretty();

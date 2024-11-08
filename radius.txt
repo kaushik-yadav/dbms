@@ -1,0 +1,38 @@
+-- Change delimiter so semicolons can be used inside the procedure
+DELIMITER //
+
+-- Create the areas table
+CREATE TABLE areas (
+    radius DECIMAL(5, 2),
+    area DECIMAL(10, 2)
+);
+
+-- Create the procedure to calculate area for radii 5 to 9
+CREATE PROCEDURE calculate_area()
+BEGIN
+    DECLARE radius_value INT DEFAULT 5;
+    DECLARE area_value DECIMAL(10, 2);
+    DECLARE pi DECIMAL(10, 5) DEFAULT 3.14159; -- Declare pi as a variable, not constant
+    
+    -- Loop to calculate area for radii from 5 to 9
+    WHILE radius_value <= 9 DO
+        -- Calculate the area: π * r^2
+        SET area_value = pi * POW(radius_value, 2);
+        
+        -- Insert the radius and corresponding area into the areas table
+        INSERT INTO areas VALUES (radius_value, area_value);
+        
+        -- Increment the radius
+        SET radius_value = radius_value + 1;
+    END WHILE;
+    
+    -- Commit the transaction (only if autocommit is off)
+    COMMIT;
+END //
+
+-- Reset the delimiter back to the default semicolon
+DELIMITER ;
+
+-- Call the stored procedure
+CALL calculate_area();
+Select * from areas;
