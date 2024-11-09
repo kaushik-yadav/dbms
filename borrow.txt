@@ -48,3 +48,28 @@ select * from Fine;
 
 
 
+
+Long form of DDL, DML, DCL, TCL:
+
+DDL: Data Definition Language – used to define and manage database schema objects (e.g., tables, indexes).
+DML: Data Manipulation Language – used to manage data within schema objects (e.g., inserting, updating, deleting rows).
+DCL: Data Control Language – used to control access to data in the database (e.g., granting or revoking permissions).
+TCL: Transaction Control Language – used to manage transactions in a database (e.g., commit, rollback, savepoint).
+Difference between Update and Alter commands:
+
+UPDATE: A DML command used to modify existing records in a table. It changes the values of specific columns in selected rows.
+ALTER: A DDL command used to modify the structure of a database object. It can add, delete, or modify columns in an existing table but does not modify data within rows.
+Aggregate functions: Aggregate functions are functions in SQL that perform calculations on a set of values and return a single result. Common aggregate functions include:
+
+SUM(): Calculates the total sum of a numeric column.
+AVG(): Calculates the average value of a numeric column.
+COUNT(): Counts the number of rows or non-null values in a column.
+MAX(): Finds the maximum value in a column.
+MIN(): Finds the minimum value in a column.
+These functions are often used with the GROUP BY clause to group data before aggregation.
+
+
+
+
+
+
